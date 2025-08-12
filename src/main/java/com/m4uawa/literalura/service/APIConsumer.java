@@ -8,7 +8,9 @@ import java.net.http.HttpResponse;
 
 public class APIConsumer {
     public String obtainData(String url){
-        HttpClient client = HttpClient.newHttpClient();
+        HttpClient client = HttpClient.newBuilder()
+        .followRedirects(HttpClient.Redirect.ALWAYS)
+        .build();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .build();
@@ -22,7 +24,6 @@ public class APIConsumer {
             throw new RuntimeException(e);
         }
         String json = response.body();
-        System.out.print("HOLA: "+response);
         return json;
     }
 }

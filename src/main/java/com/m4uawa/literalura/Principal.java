@@ -12,7 +12,7 @@ public class Principal {
     private Scanner keyboard = new Scanner(System.in);
     private APIConsumer apiConsumer = new APIConsumer();
     private DataConverter dataConverter = new DataConverter();
-    private final String BASE_URL = "https://gutendex.com/books?search=";
+    private final String BASE_URL = "https://gutendex.com/books";
 
     String menu = """
             \n\nElija la opción a través de su número:
@@ -32,20 +32,13 @@ public class Principal {
             keyboard.nextLine();
 
             switch (opt){
-                case 0:
-                    break;
-                case 1:
-                    searchByTitle();
-                case 2:
-                    listRegisteredBooks();
-                case 3:
-                    listRegisteredAuthors();
-                case 4:
-                    ListLiveAuthorsByYear();
-                case 5:
-                    listBooksByLanguage();
-                default:
-                    System.out.print("Ingresar opcion valida");
+                case 0 -> {}
+                case 1 -> searchByTitle();
+                case 2 -> listRegisteredBooks();
+                case 3 -> listRegisteredAuthors();
+                case 4 -> ListLiveAuthorsByYear();
+                case 5 -> listBooksByLanguage();
+                default -> System.out.print("Ingresar opcion valida");
             }
         }
         
@@ -54,9 +47,9 @@ public class Principal {
     private void searchByTitle() {
         System.out.print("Escribe el titulo del libro que deseas buscar: ");
         var bookName = keyboard.nextLine();
-        var json = apiConsumer.obtainData(BASE_URL + bookName.replace(" ", "%20"));
+        var json = apiConsumer.obtainData(BASE_URL + "?search=" + bookName.replace(" ", "%20"));
         var dataFound = dataConverter.obtainData(json, Data.class); // PROBLEMA
-        Optional<Book> bookFound = dataFound.getResults().stream().findFirst();
+        Optional<Book> bookFound = dataFound.getResults().stream().filter(b -> b.getTitle().toUpperCase().contains(bookName.toUpperCase())).findFirst();
         if(bookFound.isPresent()){
             System.out.print("\n"+bookFound.get());
         } else {
