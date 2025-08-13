@@ -5,10 +5,27 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
 @JsonIgnoreProperties(ignoreUnknown=true)
+@Entity
+@Table(name = "book")
 public class Book {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long Id;
+
+    @Column(unique=true)
     @JsonAlias("title") String title;
 
+    @OneToMany
     @JsonAlias("authors") List<Author> author;
 
     @JsonAlias("languages") List<String> languages;
@@ -51,6 +68,10 @@ public class Book {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Long getId() {
+        return Id;
     }
     
 }

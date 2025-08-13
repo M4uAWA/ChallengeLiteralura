@@ -1,10 +1,13 @@
 package com.m4uawa.literalura;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
 import com.m4uawa.literalura.model.Book;
 import com.m4uawa.literalura.model.Data;
+import com.m4uawa.literalura.repository.BookRepository;
 import com.m4uawa.literalura.service.APIConsumer;
 import com.m4uawa.literalura.service.DataConverter;
 
@@ -24,6 +27,12 @@ public class Principal {
             0- salir\n\n
             """;
 
+    private BookRepository repository;
+
+    public Principal(BookRepository repository) {
+        this.repository = repository;
+    }
+
     public void executeMenu(){
         int opt;
         while(true){
@@ -32,7 +41,7 @@ public class Principal {
             keyboard.nextLine();
 
             switch (opt){
-                case 0 -> {}
+                case 0 -> {return;}
                 case 1 -> searchByTitle();
                 case 2 -> listRegisteredBooks();
                 case 3 -> listRegisteredAuthors();
@@ -47,11 +56,14 @@ public class Principal {
     private void searchByTitle() {
         System.out.print("Escribe el titulo del libro que deseas buscar: ");
         var bookName = keyboard.nextLine();
-        var json = apiConsumer.obtainData(BASE_URL + "?search=" + bookName.replace(" ", "%20"));
+        var json = apiConsumer.obtainData(BASE_URL + "/?search=" + bookName.replace(" ", "%20"));
         var dataFound = dataConverter.obtainData(json, Data.class); // PROBLEMA
         Optional<Book> bookFound = dataFound.getResults().stream().filter(b -> b.getTitle().toUpperCase().contains(bookName.toUpperCase())).findFirst();
+        List<Book> bookList = new ArrayList<>();
         if(bookFound.isPresent()){
             System.out.print("\n"+bookFound.get());
+            bookList.add(bookFound.get());
+            repository.saveAll(bookList);
         } else {
             System.out.print("\nLibro no encontrado");
         }

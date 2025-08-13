@@ -3,8 +3,22 @@ package com.m4uawa.literalura.model;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 @JsonIgnoreProperties(ignoreUnknown=true)
+@Entity
+@Table(name = "author")
 public class Author {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long Id;
+
+    @Column(unique=true)
     @JsonAlias("name") String name;
 
     @JsonAlias("birth_year") String birthDate;
@@ -38,6 +52,14 @@ public class Author {
 
     public void setDeathDate(String deathDate) {
         this.deathDate = deathDate;
+    }
+
+    public Long getId() {
+        return Id;
+    }
+
+    public void setId(Long Id) {
+        this.Id = Id;
     }
     
 }
