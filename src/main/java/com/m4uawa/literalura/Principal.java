@@ -1,12 +1,12 @@
 package com.m4uawa.literalura;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import com.m4uawa.literalura.model.Author;
 import com.m4uawa.literalura.model.Book;
 import com.m4uawa.literalura.model.Data;
+import com.m4uawa.literalura.repository.AuthorRepository;
 import com.m4uawa.literalura.repository.BookRepository;
 import com.m4uawa.literalura.service.APIConsumer;
 import com.m4uawa.literalura.service.DataConverter;
@@ -28,9 +28,11 @@ public class Principal {
             """;
 
     private BookRepository repository;
+    private AuthorRepository aRepository;
 
-    public Principal(BookRepository repository) {
+    public Principal(BookRepository repository, AuthorRepository aRepository) {
         this.repository = repository;
+        this.aRepository = aRepository;
     }
 
     public void executeMenu(){
@@ -57,13 +59,24 @@ public class Principal {
         System.out.print("Escribe el titulo del libro que deseas buscar: ");
         var bookName = keyboard.nextLine();
         var json = apiConsumer.obtainData(BASE_URL + "/?search=" + bookName.replace(" ", "%20"));
-        var dataFound = dataConverter.obtainData(json, Data.class); // PROBLEMA
+        var dataFound = dataConverter.obtainData(json, Data.class);
         Optional<Book> bookFound = dataFound.getResults().stream().filter(b -> b.getTitle().toUpperCase().contains(bookName.toUpperCase())).findFirst();
-        List<Book> bookList = new ArrayList<>();
         if(bookFound.isPresent()){
+            Author author;
+            String authorName = bookFound.get().getAuthors().get(0).getName();
+            Optional<Author> authorAlreadyExists = aRepository.findByNameIgnoreCase(authorName);
+            if (authorAlreadyExists.isPresent()) {
+                author = authorAlreadyExists.get();
+            } else {
+                Author newAuthor = bookFound.get().getAuthors().get(0);
+                newAuthor.setId(null);
+                author = aRepository.save(newAuthor);
+            }
+            bookFound.get().setAuthor(author);
+            bookFound.get().setLanguage(bookFound.get().getLanguages().get(0));
+            bookFound.get().setId(null);
             System.out.print("\n"+bookFound.get());
-            bookList.add(bookFound.get());
-            repository.saveAll(bookList);
+            repository.save(bookFound.get());
         } else {
             System.out.print("\nLibro no encontrado");
         }

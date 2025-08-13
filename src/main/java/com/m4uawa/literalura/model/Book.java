@@ -7,11 +7,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 @Entity
@@ -24,26 +26,32 @@ public class Book {
 
     @Column(unique=true)
     @JsonAlias("title") String title;
+    
+    @Transient
+    @JsonAlias("authors") List<Author> authors;
 
-    @OneToMany
-    @JsonAlias("authors") List<Author> author;
+    @ManyToOne(fetch=FetchType.EAGER)
+    Author author;
 
+    @Transient
     @JsonAlias("languages") List<String> languages;
+
+    String language;
 
     @JsonAlias("download_count") Double numberOfDownloads;
 
     @Override
     public String toString() {
-        return "Book [titulo=" + title + ", author=" + author + ", lenguages=" + languages + ", numberOfDownloads="
+        return "Book [titulo=" + title + ", author=" + author + ", lenguage=" + language + ", numberOfDownloads="
                 + numberOfDownloads + "]";
     }
 
-    public List<Author> getAuthor() {
-        return author;
+    public List<Author> getAuthors() {
+        return authors;
     }
 
-    public void setAuthor(List<Author> author) {
-        this.author = author;
+    public void setAuthors(List<Author> authors) {
+        this.authors = authors;
     }
 
     public List<String> getLanguages() {
@@ -72,6 +80,26 @@ public class Book {
 
     public Long getId() {
         return Id;
+    }
+
+    public void setId(Long Id) {
+        this.Id = Id;
+    }
+
+    public Author getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
     
 }
