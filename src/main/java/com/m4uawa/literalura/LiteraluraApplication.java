@@ -22,7 +22,7 @@ public class LiteraluraApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Principal main = new Principal(repository,aRepository);
+		Menu main = new Menu(repository,aRepository);
 		main.executeMenu();
 	}
 

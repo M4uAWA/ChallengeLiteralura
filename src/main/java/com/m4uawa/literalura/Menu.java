@@ -14,7 +14,7 @@ import com.m4uawa.literalura.repository.BookRepository;
 import com.m4uawa.literalura.service.APIConsumer;
 import com.m4uawa.literalura.service.DataConverter;
 
-public class Principal {
+public class Menu {
     private Scanner keyboard = new Scanner(System.in);
     private APIConsumer apiConsumer = new APIConsumer();
     private DataConverter dataConverter = new DataConverter();
@@ -33,7 +33,7 @@ public class Principal {
     private BookRepository repository;
     private AuthorRepository aRepository;
 
-    public Principal(BookRepository repository, AuthorRepository aRepository) {
+    public Menu(BookRepository repository, AuthorRepository aRepository) {
         this.repository = repository;
         this.aRepository = aRepository;
     }
