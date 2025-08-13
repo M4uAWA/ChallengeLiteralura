@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class Data {
-    @JsonAlias("results") List<Book> results;
+    @JsonAlias("results") private List<Book> results;
 
     public List<Book> getResults() {
         return results;

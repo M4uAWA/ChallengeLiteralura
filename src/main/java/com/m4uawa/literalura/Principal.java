@@ -1,7 +1,10 @@
 package com.m4uawa.literalura;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.m4uawa.literalura.model.Author;
 import com.m4uawa.literalura.model.Book;
@@ -39,6 +42,7 @@ public class Principal {
         int opt;
         while(true){
             System.out.print(menu);
+            System.out.print("Opción: ");
             opt = keyboard.nextInt();
             keyboard.nextLine();
 
@@ -76,25 +80,61 @@ public class Principal {
             bookFound.get().setLanguage(bookFound.get().getLanguages().get(0));
             bookFound.get().setId(null);
             System.out.print("\n"+bookFound.get());
-            repository.save(bookFound.get());
+            try {
+                repository.save(bookFound.get());
+            } catch (DataIntegrityViolationException e) {
+                System.out.println("El libro '" + bookFound.get().getTitle() + "' ya está registrado en la base de datos.");
+            }
         } else {
             System.out.print("\nLibro no encontrado");
         }
     }
 
     private void listRegisteredBooks() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<Book> books = repository.findAllByOrderByTitleAsc();
+        if (books.isEmpty()) {
+            System.out.println("No hay libros registrados.");
+        } else {
+            books.forEach(System.out::println);
+        }
     }
-
+    
     private void listRegisteredAuthors() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<Author> authors = aRepository.findAllByOrderByNameAsc();
+        if (authors.isEmpty()) {
+            System.out.println("No hay autores registrados.");
+        } else {
+            authors.forEach(System.out::println);
+        }
     }
 
     private void ListLiveAuthorsByYear() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
+        System.out.print("Ingrese el año: ");
+        var input = keyboard.nextLine();
+        try {
+            int year = Integer.parseInt(input);
+            List<Author> authors = aRepository.findByBirthDateLessThanAndDeathDateGreaterThan(year, year);
+        
+            if (authors.isEmpty()) {
+                System.out.println("No hay autores vivos en " + year);
+            } else {
+                authors.forEach(System.out::println);
+            }          
+        } catch (NumberFormatException e) {
+            System.out.println("'" + input + "' no es un número válido.");
+        }
+
     }
 
     private void listBooksByLanguage() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        System.out.print("Ingrese el idioma (ej. en = Inglés, es = Español, fr = Francés, pt = Portugués): ");
+        String lang = keyboard.nextLine();
+        List<Book> books = repository.findByLanguageIgnoreCase(lang);
+        if (books.isEmpty()) {
+            System.out.println("No hay libros registrados en el idioma " + lang);
+        } else {
+            books.forEach(System.out::println);
+        }
     }
 }

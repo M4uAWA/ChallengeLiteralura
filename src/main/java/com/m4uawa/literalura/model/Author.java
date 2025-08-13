@@ -1,5 +1,6 @@
 package com.m4uawa.literalura.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
@@ -7,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,17 +22,17 @@ public class Author {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long Id;
+    private Long Id;
 
     @Column(unique=true)
-    @JsonAlias("name") String name;
+    @JsonAlias("name") private String name;
 
-    @JsonAlias("birth_year") int birthDate;
+    @JsonAlias("birth_year") private int birthDate;
 
-    @JsonAlias("death_year") int deathDate;
+    @JsonAlias("death_year") private int deathDate;
 
-    @OneToMany(mappedBy= "author")
-    List<Book> books;
+    @OneToMany(mappedBy= "author",fetch=FetchType.EAGER)
+    private List<Book> books;
 
     public String getName() {
         return name;
@@ -75,8 +77,9 @@ public class Author {
 
     @Override
     public String toString() {
-        return "Author [name=" + name + ", birthDate=" + birthDate + ", deathDate=" + deathDate
-                + "]";
+        List<String> booksAtName = new ArrayList<>();
+        this.books.forEach(b->booksAtName.add(b.getTitle()));
+        return "\nAUTOR\nNombre: " + name + "\nFecha de Nacimiento:" + birthDate + "\nFecha de Fallecimiento: " + deathDate + "\nLibros: "+booksAtName;
     }
     
 }

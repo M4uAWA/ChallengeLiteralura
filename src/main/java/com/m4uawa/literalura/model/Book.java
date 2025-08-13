@@ -22,28 +22,27 @@ public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long Id;
+    private Long Id;
 
     @Column(unique=true)
-    @JsonAlias("title") String title;
+    @JsonAlias("title") private String title;
     
     @Transient
-    @JsonAlias("authors") List<Author> authors;
+    @JsonAlias("authors") private List<Author> authors;
 
     @ManyToOne(fetch=FetchType.EAGER)
-    Author author;
+    private Author author;
 
     @Transient
-    @JsonAlias("languages") List<String> languages;
+    @JsonAlias("languages") private List<String> languages;
 
-    String language;
+    private String language;
 
-    @JsonAlias("download_count") Double numberOfDownloads;
+    @JsonAlias("download_count") private Double numberOfDownloads;
 
     @Override
     public String toString() {
-        return "Book [titulo=" + title + ", author=" + author + ", lenguage=" + language + ", numberOfDownloads="
-                + numberOfDownloads + "]";
+        return "\nLIBRO \nTitulo: " + title + "\nAutor: " + this.author.getName() + "\nLenguaje: " + language + "\nNúmero de descargas: "+ numberOfDownloads;
     }
 
     public List<Author> getAuthors() {
