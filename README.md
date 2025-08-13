@@ -48,5 +48,6 @@ La aplicacion comienza en el archivo `LiteraluraApplication.java` en donde tenem
 Dentro de `Menu.java` tenemos algunos atributos que permiten la entrada de datos por medio del teclado, asi como la instanciacion de las clases `APIConsumer` y `DataConverter`:
 >APIConsumer:
 >>Es una clase que utiliza el cliente HTTP incluido en java para hacer la peticion de un json a la URL de una API (en este caso la de "[gutendex](https://gutendex.com/)").
+
 >DataConverter:
 >>Es una clase que extiende un metodo de una interfaz del mismo nombre (con un prefijo "I"), dicho metodo es `obtainData`, el cual
